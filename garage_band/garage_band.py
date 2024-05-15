@@ -5,10 +5,10 @@ import matplotlib.pyplot as plt
 from scipy import signal,fft
 import numpy as np
 import librosa
-from scipy.io import wavfile
 
 
-#read file and get duration 
+
+#read file and get duration
 path_to_audio = 'diapason.wav'
 data, fs = sf.read(path_to_audio)
 f = sf.SoundFile(path_to_audio)
@@ -37,7 +37,7 @@ print('Note corrispondenti ai picchi: ',notes)
 #filter main peak and write new file audio
 nyq = 0.5 * fs  # Nyquist Frequency
 def get_peak_freq(segnale,picchi):
-    max = 0 
+    max = 0
     max_index = 0
     i = 0
     for i in range(len(picchi)):
@@ -59,8 +59,7 @@ fft_filtered_signal = [fft_sx * filter,fft_dx * filter]
 filtered_signal = [fft.irfft(i).real.astype('int16') for i in fft_filtered_signal]
 
 #writing new file with file audio
-
-wavfile.write('filter.wav',fs,filtered_signal)
+sf.write('filter.wav',filtered_signal, fs)
 
 plt.figure(figsize=(16, 9))
 plt.plot(freq,filter)
