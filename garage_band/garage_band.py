@@ -1,6 +1,5 @@
-#!.venv/bin/python3
+#!/home/leonardo/Programs/python_env/bin/python3
 
-from scipy.io.wavfile import write as write_wav
 import soundfile as sf
 import matplotlib.pyplot as plt
 from scipy import signal,fft
@@ -13,9 +12,9 @@ import soundcard as sc
 default_speaker = sc.default_speaker()
 
 #read file and get duration
-path_to_audio = 'pulita_semplice.wav'
-data, fs = sf.read(path_to_audio)
-f = sf.SoundFile(path_to_audio)
+path_to_audio = ['diapason.wav','pulita_semplice.wav','distorta.wav']
+data, fs = sf.read(path_to_audio[0])
+f = sf.SoundFile(path_to_audio[0])
 duration = f.frames/f.samplerate
 
 
@@ -25,13 +24,16 @@ sf.write('new_diapason.wav',data,fs)
 #select channel, get fft and plot all
 channel_sx = data[:,0]
 channel_dx = data[:,1]
-freq = fft.rfftfreq(len(channel_sx),1/fs)
+freq = fft.rfftfreq(len(channel_sx),1./fs)
 t = np.linspace(0,duration,len(channel_sx))
 fft_sx = fft.rfft(channel_sx,norm='forward')
 fft_dx = fft.rfft(channel_dx,norm='forward')
+
 #find peak and peaks width
-peaks = signal.find_peaks(abs(fft_sx)**2, height = 2.8e-5)[0]
+peaks = signal.find_peaks(abs(fft_sx)**2, height = 2.8e-5, rel_height = .99)[0]
+peak_heights = signal.find_peaks(abs(fft_sx)**2, height = 2.8e-5, rel_height = .99)[1]['peak_heights']
 print('Picchi: ',peaks, 'Numero Picchi: ', len(peaks))
+print('Peak heights: ', peak_heights)
 
 
 peaks_widths = signal.peak_widths(abs(fft_sx)**2,peaks, rel_height = .99)[0]
@@ -45,30 +47,33 @@ notes = librosa.hz_to_note(freq[peaks])
 print('Note corrispondenti ai picchi: ',notes)
 
 #filter main peak and write new file audio
-nyq = 0.5 * fs  # Nyquist Frequency
-def get_peak_freq(segnale,picchi):
-    max = 0
+def get_peak_freq_index(segnale,picchi):
     max_index = 0
-    i = 0
+    max_height = 0
     for i in range(len(picchi)):
-        value = abs(segnale[picchi[i]])**2
-        if max< value:
+        peak_height = abs(segnale[picchi[i]])**2
+        print(peak_height, picchi[i])
+        if max_height < peak_height:
+            max_height = peak_height
             max_index = i
-            max = picchi[i]
-    return max, max_index
+    return max_index
+
+target_freq_index= get_peak_freq_index(fft_sx, peaks)
+# s = freq[peaks[target_freq_index]]
+# target_width = peak_widths[s]
+# target_left_delim = left_peaks[s]
 
 
-target_freq, target_freq_index= get_peak_freq(fft_sx, peaks)
 target_width = peaks_widths[target_freq_index]
 target_left_delim = left_peaks[target_freq_index]
 target_right_delim = right_peaks[target_freq_index]
 
-print(target_freq,target_freq_index, target_width)
+print(target_left_delim,target_freq_index, target_width)
 
-#TODO left_ips
 
-filter = [1 if ((i> abs(target_left_delim)) and i < abs(target_right_delim)) else 0 for i in freq]
+filter = [1 if ((i> abs(freq[int(target_left_delim)])) and i < abs(freq[int(target_right_delim)])) else 0 for i in freq]
 # filter = [1 if i < abs(target_freq+target_width) else 0 for i in freq]
+# filter = [1 if ((i> abs(freq[left_peaks[target_freq_index]])) and i < abs(freq[int(target_right_delim)])) else 0 for i in freq]
 
 fft_filtered_signal = [fft_sx * filter,fft_dx * filter]
 
@@ -99,7 +104,7 @@ normalized_channels = [channel / max_abs_value for channel, max_abs_value in zip
 audio_data = np.column_stack(normalized_channels)
 scaled_data = np.int16(audio_data * 32767)
 sf.write('filter.wav',scaled_data, fs)
-
+print('peaks: ',peaks,'freq[]peaks', freq[peaks])
 data2, fs2 = sf.read('filter.wav')
 print("playing non-filtered data")
 default_speaker.play(data=data/np.max(np.abs(data)), samplerate=fs)
@@ -136,7 +141,7 @@ plt.title("filter and filtered fft")
 plt.figure(figsize=(16, 9))
 plt.plot(t,filtered_signal[0])
 plt.ylabel("")
-plt.xlabel("time")
+plt.xlabel("time(s)")
 plt.title("Signal sx filtered")
 
 plt.figure(figsize=(16, 9))
