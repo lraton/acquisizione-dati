@@ -15,10 +15,7 @@ class Filter():
         self.freq = freq
         self.lb = lb
         self.rb = rb
-        self.signal = self.getSignal()
-
-    def getSignal(self):
-        return [1 if ((i> abs(freq[int(self.lb)])) and i < abs(freq[int(self.rb)])) else 0 for i in self.freq] 
+        self.signal = [1 if ((i> abs(freq[int(self.lb)])) and i < abs(freq[int(self.rb)])) else 0 for i in self.freq] 
              
 
 # get the current default speaker on your system:
@@ -26,8 +23,9 @@ default_speaker = sc.default_speaker()
 
 #read file and get duration
 path_to_audio = ['diapason.wav','pulita_semplice.wav','distorta.wav']
-data, fs = sf.read(path_to_audio[0])
-f = sf.SoundFile(path_to_audio[0])
+selected_audio = path_to_audio[1]
+data, fs = sf.read(selected_audio)
+f = sf.SoundFile(selected_audio)
 duration = f.frames/f.samplerate
 
 
@@ -43,6 +41,7 @@ fft_sx = fft.rfft(channel_sx,norm='forward')
 fft_dx = fft.rfft(channel_dx,norm='forward')
 ffts = [fft_sx,fft_dx]
 #find peak and peaks width
+
 peaks = [signal.find_peaks(abs(i)**2, height = 2.8e-5, rel_height = .99)[0] for i in ffts]
 peak_heights = [signal.find_peaks(abs(i)**2, height = 2.8e-5, rel_height = .99)[1]['peak_heights'] for i in ffts]
 print('Picchi: ',peaks, 'Numero Picchi: ', len(peaks))
