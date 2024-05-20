@@ -9,30 +9,33 @@ from scipy.ndimage import median_filter
 import numpy as np
 from PIL import Image
 
+imgs = ["line_0deg.png", "line_30deg.png", "line_60deg.png", "line_90deg.png", "line_0deg.png"]
 
-path_to_img = 'line_60deg.png'
+# Itera attraverso ogni immagine nell'elenco
+for immagine in imgs:
+    path_to_img = immagine
 
-img = Image.open(path_to_img)
-img=img.convert('RGB')
-width, height = img.size
-   
+    img = Image.open(path_to_img)
+    img=img.convert('RGB')
+    width, height = img.size
+    
 
-#scarto un canale 
-red_channel, green_channel, blue_channel = img.split()
+    #scarto un canale 
+    red_channel, green_channel, blue_channel = img.split()
 
-fft2 = scipy.fft.fft2(red_channel, s=None, axes=(- 2, - 1), norm=None, 
-               overwrite_x=False, workers=None, plan=None)
+    fft2 = scipy.fft.fft2(red_channel, s=None, axes=(- 2, - 1), norm=None, 
+                overwrite_x=False, workers=None, plan=None)
 
-fft_result_shifted = scipy.fft.fftshift(fft2)
+    fft_result_shifted = scipy.fft.fftshift(fft2)
 
-# Compute the magnitude spectrum
-spectrum = np.log(abs(fft_result_shifted)+1)
+    # Compute the magnitude spectrum
+    spectrum = np.log(abs(fft_result_shifted)+1)
 
-# Plot the magnitude spectrum
-plt.figure(figsize=(6, 6))
-plt.imshow(spectrum)
-plt.title('Spectrum '+path_to_img)
-plt.colorbar()
+    # Plot the magnitude spectrum
+    plt.figure(figsize=(6, 6))
+    plt.imshow(spectrum)
+    plt.title('Spectrum '+path_to_img)
+    plt.colorbar()
 
 
 
