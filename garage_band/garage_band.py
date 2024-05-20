@@ -23,7 +23,7 @@ default_speaker = sc.default_speaker()
 
 #read file and get duration
 path_to_audio = ['diapason.wav','pulita_semplice.wav','distorta.wav']
-selected_audio = path_to_audio[1]
+selected_audio = path_to_audio[0]
 data, fs = sf.read(selected_audio)
 f = sf.SoundFile(selected_audio)
 duration = f.frames/f.samplerate
