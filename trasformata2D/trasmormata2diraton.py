@@ -14,22 +14,23 @@ imgs = ["line_0deg.png", "line_30deg.png", "line_60deg.png", "line_90deg.png", "
 
 # Itera attraverso ogni immagine nell'elenco
 for immagine in imgs:
-    path_to_img = immagine
+    path_to_img = immagine #path_to_img = immagine
 
     img = Image.open(path_to_img)
     img=img.convert('RGB')
     width, height = img.size
     
 
-    #scarto un canale 
+    #Isolo i canali 
     red_channel, green_channel, blue_channel = img.split()
 
-    fft2 = scipy.fft.fft2(red_channel, s=None, axes=(- 2, - 1), norm=None, 
-                overwrite_x=False, workers=None, plan=None)
+    #Trasformata 2d
+    fft2 = scipy.fft.fft2(red_channel)
 
+    #Shift
     fft_result_shifted = scipy.fft.fftshift(fft2)
 
-    # Compute the magnitude spectrum
+    # Magnitude spectrum
     magnitude_spectrum = np.log(abs(fft_result_shifted)+1)
 
     # Plot the magnitude spectrum
@@ -40,7 +41,7 @@ for immagine in imgs:
 
 
 ##### Eserczio 2
-path_to_img = 'lena_std.tif'
+path_to_img = "lena_std.tif"
 img = Image.open(path_to_img)
 img = img.convert('RGB')
 plt.figure(figsize=(6, 6))
@@ -53,15 +54,15 @@ width, height = img.size
 #scarto un canale 
 red_channel, green_channel, blue_channel = img.split()
 
-fft2 = scipy.fft.fft2(red_channel, s=None, axes=(- 2, - 1), norm=None, 
-               overwrite_x=False, workers=None, plan=None)
+fft2 = scipy.fft.fft2(red_channel)
 
 fft_result_shifted = scipy.fft.fftshift(fft2)
 
 # Compute the magnitude spectrum
 magnitude_spectrum = np.log(abs(fft_result_shifted)+1)
 
-radius = 50  # Adjust the radius as needed
+#Mask
+radius = 50
 mask = np.zeros((width, height))
 center_x, center_y = width // 2, height // 2
 for x in range(width):
@@ -74,7 +75,7 @@ spectrum_mask = magnitude_spectrum * mask
 # Plot the spectrum with mask
 plt.figure(figsize=(6, 6))
 plt.imshow(spectrum_mask)
-plt.title('Spectrum with mask'+path_to_img)
+plt.title('Spectrum with mask '+path_to_img)
 plt.colorbar()
 
 
@@ -92,8 +93,7 @@ width, height = img.size
 #scarto un canale 
 red_channel, green_channel, blue_channel = img.split()
 
-fft2 = scipy.fft.fft2(red_channel, s=None, axes=(- 2, - 1), norm=None, 
-               overwrite_x=False, workers=None, plan=None)
+fft2 = scipy.fft.fft2(red_channel)
 
 fft_result_shifted = scipy.fft.fftshift(fft2)
 
@@ -113,7 +113,7 @@ spectrum_mask = magnitude_spectrum * mask
 # Plot the spectrum with mask
 plt.figure(figsize=(6, 6))
 plt.imshow(spectrum_mask)
-plt.title('Spectrum with mask'+path_to_img)
+plt.title('Spectrum with mask '+path_to_img)
 plt.colorbar()
 
 # Plot the Gaussian Filter
