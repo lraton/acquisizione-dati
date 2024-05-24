@@ -14,7 +14,7 @@ imgs = ["line_0deg.png", "line_30deg.png", "line_60deg.png", "line_90deg.png", "
 
 # Itera attraverso ogni immagine nell'elenco
 for immagine in imgs:
-    path_to_img = immagine #path_to_img = immagine
+    path_to_img = immagine
 
     img = Image.open(path_to_img)
     img=img.convert('RGB')

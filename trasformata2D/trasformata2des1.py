@@ -10,14 +10,20 @@ import numpy as np
 from PIL import Image
 
 ##### Eserczio 1
-imgs = ["line_45deg.png"]
+imgs = ["line_0deg.png", "line_30deg.png", "line_60deg.png", "line_90deg.png", "line_45deg.png"]
 
 # Itera attraverso ogni immagine nell'elenco
 for immagine in imgs:
-    path_to_img = immagine #path_to_img = immagine
+    path_to_img = immagine
 
     img = Image.open(path_to_img)
     img=img.convert('RGB')
+    
+    plt.figure(figsize=(6, 6))
+    plt.title(path_to_img)
+    plt.imshow(img)
+
+    plt.colorbar()
     width, height = img.size
     
 
