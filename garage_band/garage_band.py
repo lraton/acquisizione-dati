@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 from scipy import signal,fft
 import numpy as np
 import librosa, time
-import wave
 import soundcard as sc
 
 
