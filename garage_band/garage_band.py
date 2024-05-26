@@ -8,14 +8,6 @@ import librosa, time
 import soundcard as sc
 
 
-class Filter():
-
-    def __init__(self, freq, lb, rb) -> None:
-        self.freq = freq
-        self.lb = lb
-        self.rb = rb
-        self.signal = [1 if ((i> abs(freq[int(self.lb)])) and i < abs(freq[int(self.rb)])) else 0 for i in self.freq] 
-             
 
 # get the current default speaker on your system:
 default_speaker = sc.default_speaker()
@@ -43,22 +35,24 @@ ffts = [fft_sx,fft_dx]
 
 peaks = [signal.find_peaks(abs(i)**2, height = 2.8e-5, rel_height = .99)[0] for i in ffts]
 peak_heights = [signal.find_peaks(abs(i)**2, height = 2.8e-5, rel_height = .99)[1]['peak_heights'] for i in ffts]
-print('Picchi: ',peaks, 'Numero Picchi: ', len(peaks))
-print('Peak heights: ', peak_heights)
-
-
 peaks_widths = [signal.peak_widths(abs(i)**2,j, rel_height = .99)[0] for i,j in zip(ffts, peaks)]
 left_peaks , right_peaks = [signal.peak_widths(abs(i)**2,j, rel_height = .99)[2] for i,j in zip(ffts, peaks)],\
-[signal.peak_widths(abs(i)**2,j, rel_height = .99)[3] for i,j in zip(ffts, peaks)]
+                           [signal.peak_widths(abs(i)**2,j, rel_height = .99)[3] for i,j in zip(ffts, peaks)]
+
+
+
+print('Picchi: ',peaks, 'Numero Picchi: ', len(peaks))
+print('Peak heights: ', peak_heights)
 print('Larghezze picchi: ', peaks_widths)
 print('Margine sinistro picchi: ', left_peaks)
 print('Margine destro picchi: ', right_peaks)
 
 #convert peak frequencies to musical notes
-notes = [librosa.hz_to_note(freq[i]) for i in peaks]
+notes = [librosa.hz_to_note(freq[i]) for i in peaks[0]]
 print('Note corrispondenti ai picchi: ',notes)
 
 #filter main peak and write new file audio
+#find main peak
 target_freq_index = [np.argmax(i) for i in peak_heights]
 target_left_delim =[]
 target_right_delim =[]
@@ -68,7 +62,17 @@ for i in range(2):
     target_left_delim.append(left_peaks[i][target_freq_index[i]])
     target_right_delim.append(right_peaks[i][target_freq_index[i]])
 
-filters = [Filter(freq,i,j) for i,j in zip(target_left_delim,target_right_delim)]
+class Filter():
+
+    def __init__(self, freq, left_bound, right_bound, mode) -> None:
+        self.freq = freq
+        self.lb = left_bound
+        self.rb = right_bound
+        self.mode = mode #mode 1 se filtro passa banda, 0 se filtro elimina banda
+        self.signal = [1 if ((i> abs(freq[int(self.lb)])) and i < abs(freq[int(self.rb)])) else 0 for i in self.freq] if self.mode else\
+        [0 if ((i> abs(freq[int(self.lb)])) and i < abs(freq[int(self.rb)])) else 1 for i in self.freq]
+             
+filters = [Filter(freq,i,j,1) for i,j in zip(target_left_delim,target_right_delim)]
 # filter = [[1 if ((i> abs(freq[int(target_left_delim[])])) and i < abs(freq[int(target_right_delim)])) else 0 for i in freq] for j in range(2)]
 # filter = [1 if i < abs(freq[int(target_right_delim)]) else 0 for i in freq] #passa basso
 
@@ -92,45 +96,52 @@ time.sleep(.5)
 print("playing filtered data")
 default_speaker.play(data=data2/np.max(np.abs(data2)),samplerate=fs2)
 
-plt.figure(figsize=(16, 9))  # Set the figure size to 8 inches wide and 6 inches tall
-plt.plot(t,channel_sx)
-plt.ylabel("sound")
-plt.xlabel("time(s)")
+# plt.figure(figsize=(16, 9))  # Set the figure size to 8 inches wide and 6 inches tall
+# plt.plot(t,channel_sx)
+# plt.ylabel("sound")
+# plt.xlabel("time(s)")
 
 plt.figure(figsize=(16, 9))  # Set the figure size to 8 inches wide and 6 inches tall
-plt.plot(freq,abs(fft_sx)**2)
-plt.plot(freq[peaks[0]],abs(fft_sx[peaks[0]])**2, 'x')
+plt.plot(freq,abs(fft_sx)**2, label='signal spectrum')
+plt.plot(freq[peaks[0]],abs(fft_sx[peaks[0]])**2, '-x', label='peaks')
 plt.ylabel("")
+plt.legend(loc='upper right', fontsize='large', shadow=True)
 plt.xlabel("frequency")
 plt.title("potenza")
 
-plt.figure(figsize=(16, 9))
-plt.plot(freq,filters[0].signal)
-plt.ylabel("")
-plt.xlabel("frequency")
-plt.title("filter")
-
-plt.figure(figsize=(16, 9))
-plt.plot(t,filtered_signal[0])
-plt.ylabel("")
-plt.xlabel("time(s)")
-plt.title("Signal sx filtered")
-
-plt.figure(figsize=(16, 9))
-plt.plot(freq,abs(fft_filtered_signal[0])**2)
-plt.ylabel("")
-plt.xlabel("frequency")
-plt.title("Signal sx filtered")
-
-# plt.plot(freq, abs(fft_sx))
+# plt.figure(figsize=(16, 9))
+# # plt.plot(freq, abs(fft_sx))
 # plt.ylabel("")
 # plt.xlabel("frequency")
-# plt.title("Real")
-# plt.figure()
+# plt.title("Peaks")
 
+
+# plt.figure(figsize=(16, 9))
 # plt.plot(freq, fft_sx.imag)
 # plt.ylabel("")
 # plt.xlabel("frequency")
 # plt.title("imag")
-# plt.show()
+
+# plt.figure(figsize=(16, 9))
+# plt.plot(freq,filters[0].signal)
+# plt.ylabel("")
+# plt.xlabel("frequency")
+# plt.title("filter")
+
+
+# plt.figure(figsize=(16, 9))
+# plt.plot(t,filtered_signal[0])
+# plt.ylabel("")
+# plt.xlabel("time(s)")
+# plt.title("Signal sx filtered")
+
+
+# plt.figure(figsize=(16, 9))
+# plt.plot(freq,abs(fft_filtered_signal[0])**2)
+# plt.ylabel("")
+# plt.xlabel("frequency")
+# plt.title("Signal sx filtered")
+
+
+
 plt.show()
