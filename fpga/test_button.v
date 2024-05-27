@@ -20,10 +20,10 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module test_button(
+module led_button(
     input clk,
     input btnC,
-    output reg[7:0] led
+    output reg[1:0] led
     );
     reg pressed_last_cycle;
     reg led_state;

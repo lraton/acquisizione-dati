@@ -20,16 +20,23 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module led_blink(
+module led_blink_2hz_switch_double(
     input clk,
-    input wire [7:0] sw,
-    output reg [7:0] led
+    input wire [1:0] sw,
+    output reg [1:0] led
     );
-    reg [31:0] counter;
+
+    reg [25:0] counter;
+    
     initial
         counter = 0;
-    always @ (posedge clk) begin 
-        led[0] <= sw[0] & counter[25];
-        counter <= counter + 1;
+    always @ (posedge clk) begin
+        led[0] <= counter[25];
+
+        if(sw[0]==0)begin
+            counter <= counter + 1;
+        end else begin
+            counter <= counter + 2;
+        end
     end
 endmodule
