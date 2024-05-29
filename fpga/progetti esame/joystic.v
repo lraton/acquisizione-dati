@@ -5,7 +5,7 @@
 // 
 // Create Date: 03/11/2024 11:47:06 AM
 // Design Name: 
-// Module Name: test_move
+// Module Name: joystic
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module test_move(
+module joystic(
     input clk,
     input btnL,
     input btnR,

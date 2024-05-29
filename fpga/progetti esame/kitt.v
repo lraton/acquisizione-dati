@@ -5,7 +5,7 @@
 // 
 // Create Date: 03/11/2024 12:36:11 PM
 // Design Name: 
-// Module Name: led_bounce
+// Module Name: kitt
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module led_bounce(
+module kitt(
     input clk,
     output reg[15:0] led
     );

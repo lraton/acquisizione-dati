@@ -5,7 +5,7 @@
 // 
 // Create Date: 03/11/2024 10:06:55 AM
 // Design Name: 
-// Module Name: led_blink
+// Module Name: led_blink_2hz_switch_double
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 

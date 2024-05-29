@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 03/11/2024 11:03:29 AM
+// Create Date: 03/11/2024 11:23:18 AM
 // Design Name: 
-// Module Name: test_counter
+// Module Name: led_button
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -20,20 +20,21 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module test_counter(
+module led_button(
     input clk,
-    output reg[15:0] led
+    input btnC,
+    output reg[1:0] led
     );
-    reg[38:0] counter;
-    integer i;
+    reg pressed_last_cycle;
+    reg led_state;
     
-    initial
-        counter = 0;
-        
     always @ (posedge clk) begin
-        for(i = 0; i < 16; i = i + 1) begin
-            led[i] <= counter[23 + i];
+    
+        if (btnC & (~ pressed_last_cycle)) begin
+            led_state <= ~led_state;
+            led[0] <= led_state;
         end
-        counter <= counter + 1;
+        pressed_last_cycle <= btnC;
     end
+    
 endmodule

@@ -23,13 +23,12 @@
 module calculator(
     input clk,
     input wire[15:0] sw,
+    output  reg[15:0] led,
     input wire btnC,
     input wire btnR,
     input wire btnL,
     input wire btnU,
-    input wire btnD,
-    output  reg[15:0] led,
-    output  reg[6:0] seg        
+    input wire btnD
     );
     integer i=0;
     integer j=0;
@@ -42,8 +41,7 @@ module calculator(
     reg[32:0] numberSave;
     reg[32:0] freq; 
     reg error;
-    initial begin
-    end
+
     always @ (posedge clk)
         begin
 
@@ -101,6 +99,4 @@ module calculator(
                     end  
             end
     end
-    
-    
-    endmodule
+endmodule
