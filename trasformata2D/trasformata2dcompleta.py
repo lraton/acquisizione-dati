@@ -1,6 +1,3 @@
-#!/home/leonardo/Programs/python_env/bin/python3
-
-
 import matplotlib.pyplot as plt
 from scipy import signal,fft
 import scipy.fft
