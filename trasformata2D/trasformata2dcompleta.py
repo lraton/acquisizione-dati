@@ -62,7 +62,7 @@ fft_result_shifted = scipy.fft.fftshift(fft2)
 magnitude_spectrum = np.log(abs(fft_result_shifted)+1)
 
 #Mask
-radius = 50
+radius = 100
 mask = np.zeros((width, height))
 center_x, center_y = width // 2, height // 2
 for x in range(width):
@@ -100,7 +100,7 @@ fft_result_shifted = scipy.fft.fftshift(fft2)
 # Compute the magnitude spectrum
 magnitude_spectrum = np.log(abs(fft_result_shifted)+1)
 
-radius = 50  # Adjust the radius as needed
+radius = 100  
 mask = np.zeros((width, height))
 center_x, center_y = width // 2, height // 2
 for x in range(width):
