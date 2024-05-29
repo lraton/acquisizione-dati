@@ -73,8 +73,6 @@ class Filter():
         [0 if ((i> abs(freq[int(self.lb)])) and i < abs(freq[int(self.rb)])) else 1 for i in self.freq]
              
 filters = [Filter(freq,i,j,1) for i,j in zip(target_left_delim,target_right_delim)]
-# filter = [[1 if ((i> abs(freq[int(target_left_delim[])])) and i < abs(freq[int(target_right_delim)])) else 0 for i in freq] for j in range(2)]
-# filter = [1 if i < abs(freq[int(target_right_delim)]) else 0 for i in freq] #passa basso
 
 #applying the filter
 fft_filtered_signal = [i*j.signal for i,j in zip(ffts, filters)]
@@ -96,10 +94,10 @@ time.sleep(.5)
 print("playing filtered data")
 default_speaker.play(data=data2/np.max(np.abs(data2)),samplerate=fs2)
 
-# plt.figure(figsize=(16, 9))  # Set the figure size to 8 inches wide and 6 inches tall
-# plt.plot(t,channel_sx)
-# plt.ylabel("sound")
-# plt.xlabel("time(s)")
+plt.figure(figsize=(16, 9))  # Set the figure size to 8 inches wide and 6 inches tall
+plt.plot(t,channel_sx)
+plt.ylabel("sound")
+plt.xlabel("time(s)")
 
 plt.figure(figsize=(16, 9))  # Set the figure size to 8 inches wide and 6 inches tall
 plt.plot(freq,abs(fft_sx)**2, label='signal spectrum')
@@ -109,38 +107,38 @@ plt.legend(loc='upper right', fontsize='large', shadow=True)
 plt.xlabel("frequency")
 plt.title("potenza")
 
-# plt.figure(figsize=(16, 9))
-# # plt.plot(freq, abs(fft_sx))
-# plt.ylabel("")
-# plt.xlabel("frequency")
-# plt.title("Peaks")
+plt.figure(figsize=(16, 9))
+# plt.plot(freq, abs(fft_sx))
+plt.ylabel("")
+plt.xlabel("frequency")
+plt.title("Peaks")
 
 
-# plt.figure(figsize=(16, 9))
-# plt.plot(freq, fft_sx.imag)
-# plt.ylabel("")
-# plt.xlabel("frequency")
-# plt.title("imag")
+plt.figure(figsize=(16, 9))
+plt.plot(freq, fft_sx.imag)
+plt.ylabel("")
+plt.xlabel("frequency")
+plt.title("imag")
 
-# plt.figure(figsize=(16, 9))
-# plt.plot(freq,filters[0].signal)
-# plt.ylabel("")
-# plt.xlabel("frequency")
-# plt.title("filter")
-
-
-# plt.figure(figsize=(16, 9))
-# plt.plot(t,filtered_signal[0])
-# plt.ylabel("")
-# plt.xlabel("time(s)")
-# plt.title("Signal sx filtered")
+plt.figure(figsize=(16, 9))
+plt.plot(freq,filters[0].signal)
+plt.ylabel("")
+plt.xlabel("frequency")
+plt.title("filter")
 
 
-# plt.figure(figsize=(16, 9))
-# plt.plot(freq,abs(fft_filtered_signal[0])**2)
-# plt.ylabel("")
-# plt.xlabel("frequency")
-# plt.title("Signal sx filtered")
+plt.figure(figsize=(16, 9))
+plt.plot(t,filtered_signal[0])
+plt.ylabel("")
+plt.xlabel("time(s)")
+plt.title("Signal sx filtered")
+
+
+plt.figure(figsize=(16, 9))
+plt.plot(freq,abs(fft_filtered_signal[0])**2)
+plt.ylabel("")
+plt.xlabel("frequency")
+plt.title("Signal sx filtered")
 
 
 
